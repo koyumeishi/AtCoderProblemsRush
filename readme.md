@@ -1,6 +1,6 @@
 # AtCoderProblemsRush
 
----
+[![Build Status](https://travis-ci.org/koyumeishi/AtCoderProblemsRush.svg?branch=master)](https://travis-ci.org/koyumeishi/AtCoderProblemsRush)
 
 AtCoderProblemsRush speeds up [AtCoderProblems](http://kenkoooo.com/atcoder/).
 
