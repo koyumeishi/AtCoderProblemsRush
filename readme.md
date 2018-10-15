@@ -2,19 +2,18 @@
 
 [![Build Status](https://travis-ci.org/koyumeishi/AtCoderProblemsRush.svg?branch=master)](https://travis-ci.org/koyumeishi/AtCoderProblemsRush)
 
-AtCoderProblemsRush speeds up [AtCoderProblems](http://kenkoooo.com/atcoder/).
+[AtCoderProblemsRush](https://github.com/koyumeishi/AtCoderProblemsRush) speeds up [AtCoderProblems](http://kenkoooo.com/atcoder/).
 
 ## Overview
 
-This UserScript store your submission data within your browser and 
-show your progress before AtCoderProblems crawler runs.
+This UserScript store your submission data within your browser and show your progress before AtCoderProblems crawler runs.
 
 ## Installation
 
 - install a userscript manager like [Tampermonkey](https://tampermonkey.net/)
 - Install the script from  
     * [GitHub](https://koyumeishi.github.io/AtCoderProblemsRush/AtCoderProblemsRush.user.js)
-    * [Greasy Fork]()
+    * [Greasy Fork](https://greasyfork.org/en/scripts/373299-atcoderproblemsrush)
 
 ## Usage
 
