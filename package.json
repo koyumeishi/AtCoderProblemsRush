@@ -1,7 +1,7 @@
 {
   "name": "atcoder_problems_rush",
   "version": "1.0.0",
-  "description": "extension for AtCoder Problems",
+  "description": "AtCoderProblemsRush speeds up AtCoderProblems",
   "main": "./src/appRoot.tsx",
   "directories": {
     "doc": "doc"
