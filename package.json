@@ -6,7 +6,7 @@
   "repository": "github:koyumeishi/AtCoderProblemsRush",
   "main": "./src/appRoot.tsx",
   "scripts": {
-    "build": "webpack & cat src/userScriptHeader.js dst/bundle.js > docs/atcoderProblemsRush.user.js",
+    "build": "webpack & cat src/userScriptHeader.js dst/bundle.js > docs/AtCoderProblemsRush.user.js",
     "test": "jest"
   },
   "author": "koyumeishi",
