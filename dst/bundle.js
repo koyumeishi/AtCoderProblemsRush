@@ -529,8 +529,8 @@ var ScraperAtCoderProblems = /** @class */ (function () {
         this.userId = this.parseUserId(document.location.href);
     }
     ScraperAtCoderProblems.prototype.parseUserId = function (url) {
-        var petterSolo = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(.+)$/;
-        var petterRival = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(.+)&rivals=.*&kind=category$/;
+        var petterSolo = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
+        var petterRival = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
         if (petterSolo.test(url)) {
             return petterSolo.exec(url)[1];
         }

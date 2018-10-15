@@ -8,8 +8,8 @@ export class ScraperAtCoderProblems {
   }
 
   public parseUserId(url: string): string {
-    const petterSolo: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(.+)$/;
-    const petterRival: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(.+)&rivals=.*&kind=category$/;
+    const petterSolo: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
+    const petterRival: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
     if (petterSolo.test(url)) {
       return petterSolo.exec(url)[1];
     }
