@@ -1,0 +1,28 @@
+{
+  "name": "atcoder_problems_rush",
+  "version": "1.0.0",
+  "description": "extension for AtCoder Problems",
+  "main": "./src/appRoot.tsx",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "build": "webpack & cat src/userScriptHeader.js dst/bundle.js > doc/atcoderProblemsRush.user.js",
+    "test": "jest"
+  },
+  "author": "koyumeishi",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^23.3.5",
+    "awesome-typescript-loader": "^5.2.1",
+    "jest": "^23.6.0",
+    "source-map-loader": "^0.2.4",
+    "ts-jest": "^23.10.4",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.0",
+    "tsutils": "^3.0.0",
+    "typescript": "^3.1.3",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
+  }
+}
