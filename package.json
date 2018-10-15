@@ -4,7 +4,7 @@
   "description": "AtCoderProblemsRush speeds up AtCoderProblems",
   "homepage": "https://github.com/koyumeishi/AtCoderProblemsRush",
   "repository": "github:koyumeishi/AtCoderProblemsRush",
-  "main": "./src/appRoot.tsx",
+  "main": "./dst/bundle.js",
   "scripts": {
     "build": "webpack & cat src/userScriptHeader.js dst/bundle.js > docs/AtCoderProblemsRush.user.js",
     "test": "jest"

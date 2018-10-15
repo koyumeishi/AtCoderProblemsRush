@@ -544,8 +544,8 @@ var ScraperAtCoderProblems = /** @class */ (function () {
         this.userId = this.parseUserId(document.location.href);
     }
     ScraperAtCoderProblems.prototype.parseUserId = function (url) {
-        var petterSolo = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(\w+)$/;
-        var petterRival = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(\w+)&rivals=\w*&kind=category$/;
+        var petterSolo = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(.+)$/;
+        var petterRival = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(.+)&rivals=.*&kind=category$/;
         if (petterSolo.test(url)) {
             return petterSolo.exec(url)[1];
         }
@@ -555,13 +555,13 @@ var ScraperAtCoderProblems = /** @class */ (function () {
         return '';
     };
     ScraperAtCoderProblems.prototype.isProblemUrl = function (url) {
-        return /https:\/\/beta\.atcoder\.jp\/contests\/\w+?\/tasks\/\w+$/.test(url);
+        return /https:\/\/beta\.atcoder\.jp\/contests\/.+?\/tasks\/.+$/.test(url);
     };
     ScraperAtCoderProblems.prototype.parseContestId = function (url) {
-        return /https:\/\/beta\.atcoder\.jp\/contests\/(\w+?)\/tasks\/\w+$/.exec(url)[1];
+        return /https:\/\/beta\.atcoder\.jp\/contests\/(.+?)\/tasks\/.+$/.exec(url)[1];
     };
     ScraperAtCoderProblems.prototype.parseProblemId = function (url) {
-        return /https:\/\/beta\.atcoder\.jp\/contests\/\w+?\/tasks\/(\w+)$/.exec(url)[1];
+        return /https:\/\/beta\.atcoder\.jp\/contests\/.+?\/tasks\/(.+)$/.exec(url)[1];
     };
     ScraperAtCoderProblems.prototype.parseVerdict = function (td) {
         var classArray = Array.from(td.classList);
@@ -634,7 +634,7 @@ var Site;
     Site[Site["OldAtCoder"] = 0] = "OldAtCoder";
     Site[Site["BetaAtCoder"] = 1] = "BetaAtCoder";
     Site[Site["AtCoderProblems"] = 2] = "AtCoderProblems";
-    Site[Site["AtCoderProblemsNotCatecory"] = 3] = "AtCoderProblemsNotCatecory";
+    Site[Site["OTHER"] = 3] = "OTHER";
 })(Site = exports.Site || (exports.Site = {}));
 function siteChecker(url) {
     if (isOldAtCoder(url))
@@ -643,21 +643,26 @@ function siteChecker(url) {
         return Site.BetaAtCoder;
     if (isAtcoderProblems(url))
         return Site.AtCoderProblems;
-    return Site.AtCoderProblemsNotCatecory;
+    return Site.OTHER;
 }
 exports.siteChecker = siteChecker;
 function isOldAtCoder(url) {
-    var pattern = /\w+\.contest\.atcoder\.jp\/submissions(?!\/\d)/;
+    var pattern = /.+\.contest\.atcoder\.jp\/submissions(?!\/\d)/;
     return pattern.test(url);
 }
 function isBetaAtCoder(url) {
-    var pattern = /beta\.atcoder\.jp\/contests\/\w+\/submissions(?!\/\d+)/;
+    var pattern = /beta\.atcoder\.jp\/contests\/.+\/submissions(?!\/\d+)/;
     return pattern.test(url);
 }
 function isAtcoderProblems(url) {
-    var petterSolo = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=\w+$/;
-    var petterRival = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=\w+&rivals=\w*&kind=category$/;
-    return petterSolo.test(url) || petterRival.test(url);
+    var pattern = /^https:\/\/kenkoooo\.com\/atcoder\/\?(.+)/;
+    if (pattern.test(url) === false)
+        return false;
+    var query = pattern.exec(url)[1].split('&');
+    var hasUserName = query.map(function (q) { return /user=.+/.test(q); }).includes(true);
+    var kind = query.filter(function (q) { return /kind=.+/.test(q); }).map(function (q) { return /kind=(.+)/.exec(q)[1]; });
+    var isCategory = kind.includes('category') || kind.length === 0;
+    return hasUserName && isCategory;
 }
 
 

@@ -8,8 +8,8 @@ export class ScraperAtCoderProblems {
   }
 
   public parseUserId(url: string): string {
-    const petterSolo: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(\w+)$/;
-    const petterRival: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(\w+)&rivals=\w*&kind=category$/;
+    const petterSolo: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(.+)$/;
+    const petterRival: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=(.+)&rivals=.*&kind=category$/;
     if (petterSolo.test(url)) {
       return petterSolo.exec(url)[1];
     }
@@ -20,13 +20,13 @@ export class ScraperAtCoderProblems {
   }
 
   public isProblemUrl(url: string): boolean {
-    return /https:\/\/beta\.atcoder\.jp\/contests\/\w+?\/tasks\/\w+$/.test(url);
+    return /https:\/\/beta\.atcoder\.jp\/contests\/.+?\/tasks\/.+$/.test(url);
   }
   public parseContestId(url: string): string {
-    return /https:\/\/beta\.atcoder\.jp\/contests\/(\w+?)\/tasks\/\w+$/.exec(url)[1];
+    return /https:\/\/beta\.atcoder\.jp\/contests\/(.+?)\/tasks\/.+$/.exec(url)[1];
   }
   public parseProblemId(url: string): string {
-    return /https:\/\/beta\.atcoder\.jp\/contests\/\w+?\/tasks\/(\w+)$/.exec(url)[1];
+    return /https:\/\/beta\.atcoder\.jp\/contests\/.+?\/tasks\/(.+)$/.exec(url)[1];
   }
   public parseVerdict(td: Element): Result {
     const classArray: string[] = Array.from(td.classList);
