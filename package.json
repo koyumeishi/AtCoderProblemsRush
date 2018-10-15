@@ -2,6 +2,8 @@
   "name": "atcoder_problems_rush",
   "version": "1.0.0",
   "description": "AtCoderProblemsRush speeds up AtCoderProblems",
+  "homepage": "https://github.com/koyumeishi/AtCoderProblemsRush",
+  "repository": "github:koyumeishi/AtCoderProblemsRush",
   "main": "./src/appRoot.tsx",
   "directories": {
     "doc": "doc"
@@ -11,7 +13,7 @@
     "test": "jest"
   },
   "author": "koyumeishi",
-  "license": "ISC",
+  "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "@types/jest": "^23.3.5",
     "awesome-typescript-loader": "^5.2.1",
