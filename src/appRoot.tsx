@@ -40,7 +40,7 @@ class AtCoderProblemsRush {
               console.log('Done');
               resolve();
             } else {
-              console.log(`Failed scraping. retry in ${time} sec.`);
+              console.log(`Failed scraping. retry in ${time} ms.`);
               setTimeout(
                 () => updateTrial(resolve, reject, maxRetry - 1, time),
                 time);
@@ -57,7 +57,8 @@ class AtCoderProblemsRush {
             }
             console.log('Scraping problem table (watching table mode) ...');
             app.updateSubmissions();
-            console.log(`Done scraping. retry in ${time} sec. retry will run ${maxRetry} times.`);
+            app.applySavedSubmissions();
+            console.log(`Done scraping. retry in ${time} ms. retry will run ${maxRetry} times.`);
             setTimeout(
               () => watchTable(resolve, reject, maxRetry - 1, time),
               time);

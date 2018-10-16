@@ -254,7 +254,7 @@ var AtCoderProblemsRush = /** @class */ (function () {
                             resolve();
                         }
                         else {
-                            console.log("Failed scraping. retry in " + time + " sec.");
+                            console.log("Failed scraping. retry in " + time + " ms.");
                             setTimeout(function () { return updateTrial_1(resolve, reject, maxRetry - 1, time); }, time);
                         }
                     };
@@ -268,7 +268,8 @@ var AtCoderProblemsRush = /** @class */ (function () {
                         }
                         console.log('Scraping problem table (watching table mode) ...');
                         app_1.updateSubmissions();
-                        console.log("Done scraping. retry in " + time + " sec. retry will run " + maxRetry + " times.");
+                        app_1.applySavedSubmissions();
+                        console.log("Done scraping. retry in " + time + " ms. retry will run " + maxRetry + " times.");
                         setTimeout(function () { return watchTable_1(resolve, reject, maxRetry - 1, time); }, time);
                     };
                     doneFetchingProblems.then(function (r) { return new Promise(function (resolve, reject) {
