@@ -57,6 +57,7 @@ class AtCoderProblemsRush {
             }
             console.log('Scraping problem table (watching table mode) ...');
             app.updateSubmissions();
+            app.applySavedSubmissions();
             console.log(`Done scraping. retry in ${time} sec. retry will run ${maxRetry} times.`);
             setTimeout(
               () => watchTable(resolve, reject, maxRetry - 1, time),
