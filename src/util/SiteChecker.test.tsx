@@ -11,14 +11,14 @@ test('site cheker: old atcoder', () => {
     .toBe(Site.OTHER);
 });
 
-test('site cheker: beta atcoder', () => {
-  expect(siteChecker('https://beta.atcoder.jp/contests/code-festival-2018-qualb/submissions?f.Language=3016&f.Status=AC&f.Task=code_festival_2018_qualb_c&f.User=&page=2'))
+test('site cheker: new atcoder', () => {
+  expect(siteChecker('https://atcoder.jp/contests/code-festival-2018-qualb/submissions?f.Language=3016&f.Status=AC&f.Task=code_festival_2018_qualb_c&f.User=&page=2'))
     .toBe(Site.BetaAtCoder);
-  expect(siteChecker('https://beta.atcoder.jp/contests/code-festival-2018-qualb/submissions/me'))
+  expect(siteChecker('https://atcoder.jp/contests/code-festival-2018-qualb/submissions/me'))
     .toBe(Site.BetaAtCoder);
-  expect(siteChecker('https://beta.atcoder.jp/contests/agc028/submissions/me?page=1'))
+  expect(siteChecker('https://atcoder.jp/contests/agc028/submissions/me?page=1'))
     .toBe(Site.BetaAtCoder);
-  expect(siteChecker('https://beta.atcoder.jp/contests/agc028/submissions/3402163'))
+  expect(siteChecker('https://atcoder.jp/contests/agc028/submissions/3402163'))
     .toBe(Site.OTHER);
 });
 
