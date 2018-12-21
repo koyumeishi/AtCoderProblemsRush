@@ -18,7 +18,7 @@ function isOldAtCoder(url: string): boolean {
 }
 
 function isBetaAtCoder(url: string): boolean {
-  const pattern = /beta\.atcoder\.jp\/contests\/.+\/submissions(?!\/\d+)/;
+  const pattern = /atcoder\.jp\/contests\/.+\/submissions(?!\/\d+)/;
   return pattern.test(url);
 }
 

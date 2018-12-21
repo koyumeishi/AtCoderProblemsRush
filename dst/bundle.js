@@ -541,13 +541,13 @@ var ScraperAtCoderProblems = /** @class */ (function () {
         return '';
     };
     ScraperAtCoderProblems.prototype.isProblemUrl = function (url) {
-        return /https:\/\/beta\.atcoder\.jp\/contests\/.+?\/tasks\/.+$/.test(url);
+        return /atcoder\.jp\/contests\/.+?\/tasks\/.+$/.test(url);
     };
     ScraperAtCoderProblems.prototype.parseContestId = function (url) {
-        return /https:\/\/beta\.atcoder\.jp\/contests\/(.+?)\/tasks\/.+$/.exec(url)[1];
+        return /atcoder\.jp\/contests\/(.+?)\/tasks\/.+$/.exec(url)[1];
     };
     ScraperAtCoderProblems.prototype.parseProblemId = function (url) {
-        return /https:\/\/beta\.atcoder\.jp\/contests\/.+?\/tasks\/(.+)$/.exec(url)[1];
+        return /atcoder\.jp\/contests\/.+?\/tasks\/(.+)$/.exec(url)[1];
     };
     ScraperAtCoderProblems.prototype.parseVerdict = function (td) {
         var classArray = Array.from(td.classList);
@@ -637,7 +637,7 @@ function isOldAtCoder(url) {
     return pattern.test(url);
 }
 function isBetaAtCoder(url) {
-    var pattern = /beta\.atcoder\.jp\/contests\/.+\/submissions(?!\/\d+)/;
+    var pattern = /atcoder\.jp\/contests\/.+\/submissions(?!\/\d+)/;
     return pattern.test(url);
 }
 function isAtcoderProblems(url) {

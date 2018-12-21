@@ -20,13 +20,13 @@ export class ScraperAtCoderProblems {
   }
 
   public isProblemUrl(url: string): boolean {
-    return /https:\/\/beta\.atcoder\.jp\/contests\/.+?\/tasks\/.+$/.test(url);
+    return /atcoder\.jp\/contests\/.+?\/tasks\/.+$/.test(url);
   }
   public parseContestId(url: string): string {
-    return /https:\/\/beta\.atcoder\.jp\/contests\/(.+?)\/tasks\/.+$/.exec(url)[1];
+    return /atcoder\.jp\/contests\/(.+?)\/tasks\/.+$/.exec(url)[1];
   }
   public parseProblemId(url: string): string {
-    return /https:\/\/beta\.atcoder\.jp\/contests\/.+?\/tasks\/(.+)$/.exec(url)[1];
+    return /atcoder\.jp\/contests\/.+?\/tasks\/(.+)$/.exec(url)[1];
   }
   public parseVerdict(td: Element): Result {
     const classArray: string[] = Array.from(td.classList);
