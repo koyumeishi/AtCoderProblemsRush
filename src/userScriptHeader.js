@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AtCoderProblemsRush
 // @namespace    https://github.com/koyumeishi/AtCoderProblemsRush
-// @version      1.0.2
+// @version      1.0.3
 // @description  AtCoderProblemsRush speeds up AtCoderProblems
 // @author       koyumeishi
 // @updateURL    https://koyumeishi.github.io/AtCoderProblemsRush/AtCoderProblemsRush.user.js
