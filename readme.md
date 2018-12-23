@@ -17,9 +17,9 @@ This UserScript store your submission data within your browser and show your pro
 
 ## Usage
 
-* Login to [AtCoder](https://beta.atcoder.jp)
+* Login to [AtCoder](https://atcoder.jp)
 * Open your submissions page of the AtCoder Contest that you submitted at least one problem.  
-  (e.g. [https://beta.atcoder.jp/contests/abc103/submissions/me](https://beta.atcoder.jp/contests/abc103/submissions/me) )  
+  (e.g. [https://atcoder.jp/contests/abc103/submissions/me](https://atcoder.jp/contests/abc103/submissions/me) )  
   AtCoderProblemsRush collects your submission data.
 * Open [AtCoderProblems Category page of yourself](https://kenkoooo.com/atcoder/?user=koyumeishi&rivals=&kind=category).  
   You can see the submissions before the crawler runs or AtCoderProblems makes response.  
@@ -46,6 +46,6 @@ npm test
 
 ## External Link
 
-* [AtCoder](https://beta.atcoder.jp)
+* [AtCoder](https://atcoder.jp)
 * [AtCoderProblems](http://kenkoooo.com/atcoder/)
 
