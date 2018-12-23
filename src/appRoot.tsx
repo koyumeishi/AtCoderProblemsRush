@@ -13,65 +13,41 @@ class AtCoderProblemsRush {
   public run(): void {
     switch (this.site) {
       case Site.BetaAtCoder:
-        {
+        (() => {
           const app: ApplicationAtCoder<ScraperBetaAtCoder> = new ApplicationAtCoder(ScraperBetaAtCoder);
           app.updateSubmissions();
-          break;
-        }
+        })();
+        break;
 
       case Site.OldAtCoder:
-        {
+        (() => {
           const app: ApplicationAtCoder<ScraperOldAtCoder> = new ApplicationAtCoder(ScraperOldAtCoder);
           app.updateSubmissions();
-          break;
-        }
+        })();
+        break;
 
       case Site.AtCoderProblems:
-        {
+        (() => {
           const app: ApplicationAtCoderProblems = new ApplicationAtCoderProblems();
-          const updateTrial: any = (resolve: any, reject: any, maxRetry: number, time: number) => {
-            if (maxRetry <= 0) {
-              reject();
-              return;
-            }
-            console.log('Scraping problem table ...');
-            if (app.updateSubmissions() === true) {
-              app.applySavedSubmissions();
-              console.log('Done');
-              resolve();
-            } else {
-              console.log(`Failed scraping. retry in ${time} ms.`);
-              setTimeout(
-                () => updateTrial(resolve, reject, maxRetry - 1, time),
-                time);
-            }
+          const containerDom: Element = document.querySelector('div.container > div.container');
+          const observerOptions: any = {
+            attributes: true,
+            childList: true,
+            subtree: true,
           };
-          const doneFetchingProblems = new Promise((resolve, reject) => {
-            updateTrial(resolve, reject, 10, 2000);
-          });
-
-          const watchTable: any = (resolve: any, reject: any, maxRetry: number, time: number) => {
-            if (maxRetry <= 0) {
-              resolve();
-              return;
-            }
-            console.log('Scraping problem table (watching table mode) ...');
+          const observer = new MutationObserver((mutations: MutationRecord[], obs: MutationObserver) => {
+            console.log((new Date()).toTimeString());
+            console.log('mutation observed. update submissions');
+            obs.disconnect();
             app.updateSubmissions();
             app.applySavedSubmissions();
-            console.log(`Done scraping. retry in ${time} ms. retry will run ${maxRetry} times.`);
-            setTimeout(
-              () => watchTable(resolve, reject, maxRetry - 1, time),
-              time);
-          };
-
-          doneFetchingProblems.then(r => new　Promise(
-              (resolve, reject) => {
-                watchTable(resolve, reject, 6, 10000);
-              }))
-            .then(() => console.log('finish watching'));
-
-          break;
-        }
+            obs.observe(containerDom, observerOptions);
+          });
+          app.updateSubmissions();
+          app.applySavedSubmissions();
+          observer.observe(containerDom, observerOptions);
+        })();
+        break;
 
       default:
         break;

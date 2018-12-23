@@ -228,56 +228,39 @@ var AtCoderProblemsRush = /** @class */ (function () {
     AtCoderProblemsRush.prototype.run = function () {
         switch (this.site) {
             case SiteChecker_1.Site.BetaAtCoder:
-                {
+                (function () {
                     var app = new ApplicationAtCoder_1.ApplicationAtCoder(ScraperBetaAtcoder_1.ScraperBetaAtCoder);
                     app.updateSubmissions();
-                    break;
-                }
+                })();
+                break;
             case SiteChecker_1.Site.OldAtCoder:
-                {
+                (function () {
                     var app = new ApplicationAtCoder_1.ApplicationAtCoder(ScraperOldAtcoder_1.ScraperOldAtCoder);
                     app.updateSubmissions();
-                    break;
-                }
+                })();
+                break;
             case SiteChecker_1.Site.AtCoderProblems:
-                {
-                    var app_1 = new ApplicationAtCoderProblems_1.ApplicationAtCoderProblems();
-                    var updateTrial_1 = function (resolve, reject, maxRetry, time) {
-                        if (maxRetry <= 0) {
-                            reject();
-                            return;
-                        }
-                        console.log('Scraping problem table ...');
-                        if (app_1.updateSubmissions() === true) {
-                            app_1.applySavedSubmissions();
-                            console.log('Done');
-                            resolve();
-                        }
-                        else {
-                            console.log("Failed scraping. retry in " + time + " ms.");
-                            setTimeout(function () { return updateTrial_1(resolve, reject, maxRetry - 1, time); }, time);
-                        }
+                (function () {
+                    var app = new ApplicationAtCoderProblems_1.ApplicationAtCoderProblems();
+                    var containerDom = document.querySelector('div.container > div.container');
+                    var observerOptions = {
+                        attributes: true,
+                        childList: true,
+                        subtree: true,
                     };
-                    var doneFetchingProblems = new Promise(function (resolve, reject) {
-                        updateTrial_1(resolve, reject, 10, 2000);
+                    var observer = new MutationObserver(function (mutations, obs) {
+                        console.log((new Date()).toTimeString());
+                        console.log('mutation observed. update submissions');
+                        obs.disconnect();
+                        app.updateSubmissions();
+                        app.applySavedSubmissions();
+                        obs.observe(containerDom, observerOptions);
                     });
-                    var watchTable_1 = function (resolve, reject, maxRetry, time) {
-                        if (maxRetry <= 0) {
-                            resolve();
-                            return;
-                        }
-                        console.log('Scraping problem table (watching table mode) ...');
-                        app_1.updateSubmissions();
-                        app_1.applySavedSubmissions();
-                        console.log("Done scraping. retry in " + time + " ms. retry will run " + maxRetry + " times.");
-                        setTimeout(function () { return watchTable_1(resolve, reject, maxRetry - 1, time); }, time);
-                    };
-                    doneFetchingProblems.then(function (r) { return new Promise(function (resolve, reject) {
-                        watchTable_1(resolve, reject, 6, 10000);
-                    }); })
-                        .then(function () { return console.log('finish watching'); });
-                    break;
-                }
+                    app.updateSubmissions();
+                    app.applySavedSubmissions();
+                    observer.observe(containerDom, observerOptions);
+                })();
+                break;
             default:
                 break;
         }
