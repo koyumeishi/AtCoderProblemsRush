@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         AtCoderProblemsRush
 // @namespace    https://github.com/koyumeishi/AtCoderProblemsRush
-// @version      1.0.4
+// @version      1.0.5
 // @description  AtCoderProblemsRush speeds up AtCoderProblems
 // @author       koyumeishi
 // @updateURL    https://koyumeishi.github.io/AtCoderProblemsRush/AtCoderProblemsRush.user.js
 // @downloadURL  https://koyumeishi.github.io/AtCoderProblemsRush/AtCoderProblemsRush.user.js
 // @match        *://*.contest.atcoder.jp/submissions/*
 // @match        *://atcoder.jp/contests/*/submissions*
+// @match        *://atcoder.jp/contests/*/tasks
 // @match        *://kenkoooo.com/atcoder/*
 // @match        *://old.kenkoooo.com/atcoder/*
 // @grant        GM_setValue
@@ -248,6 +249,28 @@ var AtCoderProblemsRush = /** @class */ (function () {
                 (function () {
                     var app = new ApplicationAtCoder_1.ApplicationAtCoder(ScraperBetaAtcoder_1.ScraperBetaAtCoder);
                     app.updateSubmissions();
+                    var containerDom = document.querySelector('table');
+                    var observerOptions = {
+                        childList: true,
+                        subtree: true,
+                    };
+                    var observer = new MutationObserver(function (mutations, obs) {
+                        console.log((new Date()).toTimeString());
+                        console.log('mutation observed. update submissions');
+                        obs.disconnect();
+                        setTimeout(update, 5000);
+                    });
+                    var update = function () {
+                        app.updateSubmissions();
+                        observer.observe(containerDom, observerOptions);
+                    };
+                    update();
+                })();
+                break;
+            case SiteChecker_1.Site.BetaAtCoderTask:
+                (function () {
+                    var app = new ApplicationAtCoder_1.ApplicationAtCoder(ScraperBetaAtcoder_1.ScraperBetaAtCoder);
+                    app.updateTaskStates();
                 })();
                 break;
             case SiteChecker_1.Site.OldAtCoder:
@@ -349,6 +372,24 @@ var ApplicationAtCoder = /** @class */ (function () {
         var newWA = this.submissionSetWA
             .insertAll(submissions.filter(function (s) { return s.result === Result_1.Result.WRONG; }));
         this.save(newAC, newWA);
+    };
+    ApplicationAtCoder.prototype.updateTaskStates = function () {
+        var scraper = new this.scraperClass();
+        var tasks = document.querySelectorAll('tr > td:nth-child(2)');
+        this.load();
+        var WA = this.submissionSetWA.submissions.filter(function (s) { return s.contestId === scraper.contestId; });
+        var AC = this.submissionSetAC.submissions.filter(function (s) { return s.contestId === scraper.contestId; });
+        tasks.forEach(function (t) {
+            var url = t.querySelector('a').href;
+            var taskName = scraper.parseTaskUrl(url);
+            WA.filter(function (s) { return s.problemId === taskName; })
+                .forEach(function (s) { return t.parentElement.classList.add('warning'); });
+            AC.filter(function (s) { return s.problemId === taskName; })
+                .forEach(function (s) {
+                t.parentElement.classList.remove('warning');
+                t.parentElement.classList.add('success');
+            });
+        });
     };
     return ApplicationAtCoder;
 }());
@@ -814,15 +855,18 @@ var Site;
 (function (Site) {
     Site[Site["OldAtCoder"] = 0] = "OldAtCoder";
     Site[Site["BetaAtCoder"] = 1] = "BetaAtCoder";
-    Site[Site["OldAtCoderProblems"] = 2] = "OldAtCoderProblems";
-    Site[Site["AtCoderProblems"] = 3] = "AtCoderProblems";
-    Site[Site["OTHER"] = 4] = "OTHER";
+    Site[Site["BetaAtCoderTask"] = 2] = "BetaAtCoderTask";
+    Site[Site["OldAtCoderProblems"] = 3] = "OldAtCoderProblems";
+    Site[Site["AtCoderProblems"] = 4] = "AtCoderProblems";
+    Site[Site["OTHER"] = 5] = "OTHER";
 })(Site = exports.Site || (exports.Site = {}));
 function siteChecker(url) {
     if (isOldAtCoder(url))
         return Site.OldAtCoder;
     if (isBetaAtCoder(url))
         return Site.BetaAtCoder;
+    if (isBetaAtCoderTask(url))
+        return Site.BetaAtCoderTask;
     if (isAtcoderProblems(url))
         return Site.AtCoderProblems;
     if (isOldAtcoderProblems(url))
@@ -836,6 +880,10 @@ function isOldAtCoder(url) {
 }
 function isBetaAtCoder(url) {
     var pattern = /atcoder\.jp\/contests\/.+\/submissions(?!\/\d+)/;
+    return pattern.test(url);
+}
+function isBetaAtCoderTask(url) {
+    var pattern = /atcoder\.jp\/contests\/.+\/tasks$/;
     return pattern.test(url);
 }
 function isOldAtcoderProblems(url) {

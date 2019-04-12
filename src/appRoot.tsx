@@ -17,6 +17,29 @@ class AtCoderProblemsRush {
         (() => {
           const app: ApplicationAtCoder<ScraperBetaAtCoder> = new ApplicationAtCoder(ScraperBetaAtCoder);
           app.updateSubmissions();
+          const containerDom: Element = document.querySelector('table');
+          const observerOptions: any = {
+            childList: true,
+            subtree: true,
+          };
+          const observer = new MutationObserver((mutations: MutationRecord[], obs: MutationObserver) => {
+            console.log((new Date()).toTimeString());
+            console.log('mutation observed. update submissions');
+            obs.disconnect();
+            setTimeout(update, 5000);
+          });
+          const update = () => {
+            app.updateSubmissions();
+            observer.observe(containerDom, observerOptions);
+          };
+          update();
+        })();
+        break;
+
+      case Site.BetaAtCoderTask:
+        (() => {
+          const app: ApplicationAtCoder<ScraperBetaAtCoder> = new ApplicationAtCoder(ScraperBetaAtCoder);
+          app.updateTaskStates();
         })();
         break;
 
