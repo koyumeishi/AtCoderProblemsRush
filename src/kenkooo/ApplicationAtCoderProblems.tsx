@@ -51,7 +51,7 @@ export class ApplicationAtCoderProblems implements IApplication {
     function setWA(s: Submission): void {
       try {
         problemMapping.get(scraper.makeProblemKey(s.contestId, s.problemId))
-          .classList.add('warning');
+          .classList.add('table-warning');
       } catch (e) {
         return;
       }
@@ -61,8 +61,8 @@ export class ApplicationAtCoderProblems implements IApplication {
       try {
         const list: DOMTokenList = problemMapping.get(scraper.makeProblemKey(s.contestId, s.problemId))
           .classList;
-        list.remove('warning');
-        list.add('success');
+        list.remove('table-warning');
+        list.add('table-success');
       } catch (e) {
         return;
       }
