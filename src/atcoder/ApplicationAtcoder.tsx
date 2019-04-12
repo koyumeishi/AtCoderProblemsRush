@@ -32,4 +32,22 @@ export class ApplicationAtCoder<T extends IScraper> implements IApplication {
       .insertAll(submissions.filter((s: Submission) => s.result === Result.WRONG));
     this.save(newAC, newWA);
   }
+  public updateTaskStates (): void {
+    const scraper: T = new this.scraperClass();
+    const tasks: NodeListOf<Element> = document.querySelectorAll('tr > td:nth-child(2)');
+    this.load();
+    const WA: Submission[] = this.submissionSetWA.submissions.filter(s => s.contestId === scraper.contestId);
+    const AC: Submission[] = this.submissionSetAC.submissions.filter(s => s.contestId === scraper.contestId);
+    tasks.forEach((t) => {
+      const url: string = t.querySelector('a').href;
+      const taskName: string = scraper.parseTaskUrl(url);
+      WA.filter(s => s.problemId === taskName)
+        .forEach(s => t.parentElement.classList.add('warning'));
+      AC.filter(s => s.problemId === taskName)
+        .forEach((s) => {
+          t.parentElement.classList.remove('warning');
+          t.parentElement.classList.add('success');
+        });
+    });
+  }
 }

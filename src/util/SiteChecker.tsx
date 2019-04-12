@@ -1,6 +1,7 @@
 export enum Site {
   OldAtCoder,
   BetaAtCoder,
+  BetaAtCoderTask,
   OldAtCoderProblems,
   AtCoderProblems,
   OTHER,
@@ -9,6 +10,7 @@ export enum Site {
 export function siteChecker(url: string): Site {
   if (isOldAtCoder(url)) return Site.OldAtCoder;
   if (isBetaAtCoder(url)) return Site.BetaAtCoder;
+  if (isBetaAtCoderTask(url)) return Site.BetaAtCoderTask;
   if (isAtcoderProblems(url)) return Site.AtCoderProblems;
   if (isOldAtcoderProblems(url)) return Site.OldAtCoderProblems;
   return Site.OTHER;
@@ -21,6 +23,11 @@ function isOldAtCoder(url: string): boolean {
 
 function isBetaAtCoder(url: string): boolean {
   const pattern = /atcoder\.jp\/contests\/.+\/submissions(?!\/\d+)/;
+  return pattern.test(url);
+}
+
+function isBetaAtCoderTask(url: string): boolean {
+  const pattern = /atcoder\.jp\/contests\/.+\/tasks$/;
   return pattern.test(url);
 }
 
