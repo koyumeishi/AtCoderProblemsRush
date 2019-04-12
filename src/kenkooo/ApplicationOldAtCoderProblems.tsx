@@ -2,9 +2,9 @@ import { IApplication, strageKeyAC, strageKeyWA } from '../struct/IApplication';
 import { Result } from '../struct/Result';
 import { Submission } from '../struct/Submission';
 import { SubmissionsCollection } from '../struct/SubmissionsCollection';
-import { ScraperAtCoderProblems } from './ScraperAtCoderProblems';
+import { ScraperOldAtCoderProblems } from './ScraperOldAtCoderProblems';
 
-export class ApplicationAtCoderProblems implements IApplication {
+export class ApplicationOldAtCoderProblems implements IApplication {
   public submissionSetAC: SubmissionsCollection;
   public submissionSetWA: SubmissionsCollection;
   constructor () {
@@ -22,7 +22,7 @@ export class ApplicationAtCoderProblems implements IApplication {
   }
 
   public updateSubmissions (): boolean {
-    const scraper: ScraperAtCoderProblems = new ScraperAtCoderProblems();
+    const scraper: ScraperOldAtCoderProblems = new ScraperOldAtCoderProblems();
     if (scraper.doneFetchingProblemSet(document) === false) return false;
 
     let submissions = scraper.scrape(document);
@@ -40,7 +40,7 @@ export class ApplicationAtCoderProblems implements IApplication {
   }
 
   public applySavedSubmissions (): void {
-    const scraper: ScraperAtCoderProblems = new ScraperAtCoderProblems();
+    const scraper: ScraperOldAtCoderProblems = new ScraperOldAtCoderProblems();
     const submissions = scraper.scrape(document);
     this.load();
 
@@ -51,7 +51,7 @@ export class ApplicationAtCoderProblems implements IApplication {
     function setWA(s: Submission): void {
       try {
         problemMapping.get(scraper.makeProblemKey(s.contestId, s.problemId))
-          .classList.add('table-warning');
+          .classList.add('warning');
       } catch (e) {
         return;
       }
@@ -61,8 +61,8 @@ export class ApplicationAtCoderProblems implements IApplication {
       try {
         const list: DOMTokenList = problemMapping.get(scraper.makeProblemKey(s.contestId, s.problemId))
           .classList;
-        list.remove('table-warning');
-        list.add('table-success');
+        list.remove('warning');
+        list.add('success');
       } catch (e) {
         return;
       }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AtCoderProblemsRush
 // @namespace    https://github.com/koyumeishi/AtCoderProblemsRush
-// @version      1.0.3
+// @version      1.0.4
 // @description  AtCoderProblemsRush speeds up AtCoderProblems
 // @author       koyumeishi
 // @updateURL    https://koyumeishi.github.io/AtCoderProblemsRush/AtCoderProblemsRush.user.js
@@ -9,6 +9,7 @@
 // @match        *://*.contest.atcoder.jp/submissions/*
 // @match        *://atcoder.jp/contests/*/submissions*
 // @match        *://kenkoooo.com/atcoder/*
+// @match        *://old.kenkoooo.com/atcoder/*
 // @grant        GM_setValue
 // @grant        GM_getValue
 // ==/UserScript==
@@ -235,7 +236,8 @@ var ApplicationAtCoder_1 = __webpack_require__(5);
 var ScraperBetaAtcoder_1 = __webpack_require__(6);
 var ScraperOldAtcoder_1 = __webpack_require__(7);
 var ApplicationAtCoderProblems_1 = __webpack_require__(8);
-var SiteChecker_1 = __webpack_require__(10);
+var ApplicationOldAtCoderProblems_1 = __webpack_require__(10);
+var SiteChecker_1 = __webpack_require__(12);
 var AtCoderProblemsRush = /** @class */ (function () {
     function AtCoderProblemsRush() {
         this.site = SiteChecker_1.siteChecker(document.location.href);
@@ -254,10 +256,32 @@ var AtCoderProblemsRush = /** @class */ (function () {
                     app.updateSubmissions();
                 })();
                 break;
+            case SiteChecker_1.Site.OldAtCoderProblems:
+                (function () {
+                    var app = new ApplicationOldAtCoderProblems_1.ApplicationOldAtCoderProblems();
+                    var containerDom = document.querySelector('div.container > div.container');
+                    var observerOptions = {
+                        attributes: true,
+                        childList: true,
+                        subtree: true,
+                    };
+                    var observer = new MutationObserver(function (mutations, obs) {
+                        console.log((new Date()).toTimeString());
+                        console.log('mutation observed. update submissions');
+                        obs.disconnect();
+                        app.updateSubmissions();
+                        app.applySavedSubmissions();
+                        obs.observe(containerDom, observerOptions);
+                    });
+                    app.updateSubmissions();
+                    app.applySavedSubmissions();
+                    observer.observe(containerDom, observerOptions);
+                })();
+                break;
             case SiteChecker_1.Site.AtCoderProblems:
                 (function () {
                     var app = new ApplicationAtCoderProblems_1.ApplicationAtCoderProblems();
-                    var containerDom = document.querySelector('div.container > div.container');
+                    var containerDom = document.querySelector('div.container');
                     var observerOptions = {
                         attributes: true,
                         childList: true,
@@ -481,7 +505,7 @@ var ApplicationAtCoderProblems = /** @class */ (function () {
         function setWA(s) {
             try {
                 problemMapping.get(scraper.makeProblemKey(s.contestId, s.problemId))
-                    .classList.add('warning');
+                    .classList.add('table-warning');
             }
             catch (e) {
                 return;
@@ -491,8 +515,8 @@ var ApplicationAtCoderProblems = /** @class */ (function () {
             try {
                 var list = problemMapping.get(scraper.makeProblemKey(s.contestId, s.problemId))
                     .classList;
-                list.remove('warning');
-                list.add('success');
+                list.remove('table-warning');
+                list.add('table-success');
             }
             catch (e) {
                 return;
@@ -528,15 +552,12 @@ var ScraperAtCoderProblems = /** @class */ (function () {
         this.userId = this.parseUserId(document.location.href);
     }
     ScraperAtCoderProblems.prototype.parseUserId = function (url) {
-        var petterSolo = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
-        var petterRival = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
-        if (petterSolo.test(url)) {
-            return petterSolo.exec(url)[1];
+        var reg = /^https:\/\/kenkoooo\.com\/atcoder\/#\/table\/([\w-]+)/;
+        if (reg.test(url) === false) {
+            return '';
         }
-        if (petterRival.test(url)) {
-            return petterRival.exec(url)[1];
-        }
-        return '';
+        var users = reg.exec(url)[1].split('/');
+        return users[0];
     };
     ScraperAtCoderProblems.prototype.isProblemUrl = function (url) {
         return /atcoder\.jp\/contests\/.+?\/tasks\/.+$/.test(url);
@@ -549,9 +570,9 @@ var ScraperAtCoderProblems = /** @class */ (function () {
     };
     ScraperAtCoderProblems.prototype.parseVerdict = function (td) {
         var classArray = Array.from(td.classList);
-        if (classArray.includes('success'))
+        if (classArray.includes('table-success'))
             return Result_1.Result.AC;
-        if (classArray.includes('warning'))
+        if (classArray.includes('table-warning'))
             return Result_1.Result.WRONG;
         return Result_1.Result.NODATA;
     };
@@ -613,12 +634,189 @@ exports.ScraperAtCoderProblems = ScraperAtCoderProblems;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var IApplication_1 = __webpack_require__(2);
+var Result_1 = __webpack_require__(0);
+var SubmissionsCollection_1 = __webpack_require__(3);
+var ScraperOldAtCoderProblems_1 = __webpack_require__(11);
+var ApplicationOldAtCoderProblems = /** @class */ (function () {
+    function ApplicationOldAtCoderProblems() {
+        this.submissionSetAC = new SubmissionsCollection_1.SubmissionsCollection();
+        this.submissionSetWA = new SubmissionsCollection_1.SubmissionsCollection();
+    }
+    ApplicationOldAtCoderProblems.prototype.save = function (saveAC, saveWA) {
+        if (saveAC)
+            GM_setValue(IApplication_1.strageKeyAC, this.submissionSetAC.marshal());
+        if (saveWA)
+            GM_setValue(IApplication_1.strageKeyWA, this.submissionSetWA.marshal());
+    };
+    ApplicationOldAtCoderProblems.prototype.load = function () {
+        this.submissionSetAC.unmarshal(GM_getValue(IApplication_1.strageKeyAC, '[]'));
+        this.submissionSetWA.unmarshal(GM_getValue(IApplication_1.strageKeyWA, '[]'));
+    };
+    ApplicationOldAtCoderProblems.prototype.updateSubmissions = function () {
+        var scraper = new ScraperOldAtCoderProblems_1.ScraperOldAtCoderProblems();
+        if (scraper.doneFetchingProblemSet(document) === false)
+            return false;
+        var submissions = scraper.scrape(document);
+        this.load();
+        var userIds = this.savedUserIds();
+        submissions = submissions.filter(function (s) { return userIds.has(s.userId); });
+        var newAC = this.submissionSetAC
+            .insertAll(submissions.filter(function (s) { return s.result === Result_1.Result.AC; }));
+        var newWA = this.submissionSetWA
+            .insertAll(submissions.filter(function (s) { return s.result === Result_1.Result.WRONG; }));
+        this.save(newAC, newWA);
+        return true;
+    };
+    ApplicationOldAtCoderProblems.prototype.applySavedSubmissions = function () {
+        var scraper = new ScraperOldAtCoderProblems_1.ScraperOldAtCoderProblems();
+        var submissions = scraper.scrape(document);
+        this.load();
+        var problemMapping = scraper.makeProblemIdToTableCellMap(document);
+        var ac = this.submissionSetAC.submissions.filter(function (s) { return s.userId === scraper.userId; });
+        var wa = this.submissionSetWA.submissions.filter(function (s) { return s.userId === scraper.userId; });
+        function setWA(s) {
+            try {
+                problemMapping.get(scraper.makeProblemKey(s.contestId, s.problemId))
+                    .classList.add('warning');
+            }
+            catch (e) {
+                return;
+            }
+        }
+        function setAC(s) {
+            try {
+                var list = problemMapping.get(scraper.makeProblemKey(s.contestId, s.problemId))
+                    .classList;
+                list.remove('warning');
+                list.add('success');
+            }
+            catch (e) {
+                return;
+            }
+        }
+        this.submissionSetWA.submissions
+            .filter(function (s) { return s.userId === scraper.userId; })
+            .forEach(setWA);
+        this.submissionSetAC.submissions
+            .filter(function (s) { return s.userId === scraper.userId; })
+            .forEach(setAC);
+    };
+    ApplicationOldAtCoderProblems.prototype.savedUserIds = function () {
+        return new Set(this.submissionSetAC.submissions.map(function (s) { return s.userId; })
+            .concat(this.submissionSetWA.submissions.map(function (s) { return s.userId; })));
+    };
+    return ApplicationOldAtCoderProblems;
+}());
+exports.ApplicationOldAtCoderProblems = ApplicationOldAtCoderProblems;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Result_1 = __webpack_require__(0);
+var Submission_1 = __webpack_require__(1);
+var ScraperOldAtCoderProblems = /** @class */ (function () {
+    function ScraperOldAtCoderProblems() {
+        this.userId = this.parseUserId(document.location.href);
+    }
+    ScraperOldAtCoderProblems.prototype.parseUserId = function (url) {
+        var patternSolo = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
+        var patternRival = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
+        if (patternSolo.test(url)) {
+            return patternSolo.exec(url)[1];
+        }
+        if (patternRival.test(url)) {
+            return patternRival.exec(url)[1];
+        }
+        return '';
+    };
+    ScraperOldAtCoderProblems.prototype.isProblemUrl = function (url) {
+        return /atcoder\.jp\/contests\/.+?\/tasks\/.+$/.test(url);
+    };
+    ScraperOldAtCoderProblems.prototype.parseContestId = function (url) {
+        return /atcoder\.jp\/contests\/(.+?)\/tasks\/.+$/.exec(url)[1];
+    };
+    ScraperOldAtCoderProblems.prototype.parseProblemId = function (url) {
+        return /atcoder\.jp\/contests\/.+?\/tasks\/(.+)$/.exec(url)[1];
+    };
+    ScraperOldAtCoderProblems.prototype.parseVerdict = function (td) {
+        var classArray = Array.from(td.classList);
+        if (classArray.includes('success'))
+            return Result_1.Result.AC;
+        if (classArray.includes('warning'))
+            return Result_1.Result.WRONG;
+        return Result_1.Result.NODATA;
+    };
+    ScraperOldAtCoderProblems.prototype.parseTableCell = function (td) {
+        try {
+            var url = td.querySelector('a').href;
+            if (this.isProblemUrl(url) === false)
+                return [];
+            var verdict = this.parseVerdict(td);
+            return [Submission_1.createSubmission(this.parseContestId(url), this.parseProblemId(url), verdict, this.userId)];
+        }
+        catch (e) {
+            return [];
+        }
+    };
+    ScraperOldAtCoderProblems.prototype.parseTableRow = function (tr) {
+        var _this = this;
+        return [].concat.apply([], Array.from(tr.querySelectorAll('td'))
+            .map(function (td) { return _this.parseTableCell(td); })).filter(function (s) { return s.result !== Result_1.Result.NODATA; });
+    };
+    ScraperOldAtCoderProblems.prototype.scrape = function (doc) {
+        var _this = this;
+        if (this.userId === '')
+            return [];
+        return [].concat.apply([], Array.from(doc.querySelectorAll('tbody > tr'))
+            .map(function (tr) { return _this.parseTableRow(tr); }));
+    };
+    ScraperOldAtCoderProblems.prototype.doneFetchingProblemSet = function (doc) {
+        var _this = this;
+        return Array.from(doc.querySelector('tbody > tr').querySelectorAll('a'))
+            .map(function (e) { return e.href; }).some(function (url) { return _this.isProblemUrl(url); });
+    };
+    ScraperOldAtCoderProblems.prototype.makeProblemKey = function (contestId, problemId) {
+        return problemId + "/" + contestId;
+    };
+    ScraperOldAtCoderProblems.prototype.makeProblemIdToTableCellMap = function (doc) {
+        var _this = this;
+        var res = new Map();
+        var td = [].concat.apply([], Array.from(doc.getElementsByTagName('tbody'))
+            .map(function (e) { return Array.from(e.getElementsByTagName('td')); }));
+        var problemOfCell = td.map(function (e) { return _this.parseTableCell(e); });
+        problemOfCell.forEach(function (p, i) {
+            if (p.length === 0)
+                return;
+            var key = _this.makeProblemKey(p[0].contestId, p[0].problemId);
+            res.set(key, td[i]);
+        });
+        return res;
+    };
+    return ScraperOldAtCoderProblems;
+}());
+exports.ScraperOldAtCoderProblems = ScraperOldAtCoderProblems;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var Site;
 (function (Site) {
     Site[Site["OldAtCoder"] = 0] = "OldAtCoder";
     Site[Site["BetaAtCoder"] = 1] = "BetaAtCoder";
-    Site[Site["AtCoderProblems"] = 2] = "AtCoderProblems";
-    Site[Site["OTHER"] = 3] = "OTHER";
+    Site[Site["OldAtCoderProblems"] = 2] = "OldAtCoderProblems";
+    Site[Site["AtCoderProblems"] = 3] = "AtCoderProblems";
+    Site[Site["OTHER"] = 4] = "OTHER";
 })(Site = exports.Site || (exports.Site = {}));
 function siteChecker(url) {
     if (isOldAtCoder(url))
@@ -627,6 +825,8 @@ function siteChecker(url) {
         return Site.BetaAtCoder;
     if (isAtcoderProblems(url))
         return Site.AtCoderProblems;
+    if (isOldAtcoderProblems(url))
+        return Site.OldAtCoderProblems;
     return Site.OTHER;
 }
 exports.siteChecker = siteChecker;
@@ -638,8 +838,8 @@ function isBetaAtCoder(url) {
     var pattern = /atcoder\.jp\/contests\/.+\/submissions(?!\/\d+)/;
     return pattern.test(url);
 }
-function isAtcoderProblems(url) {
-    var pattern = /^https:\/\/kenkoooo\.com\/atcoder\/\?(.+)/;
+function isOldAtcoderProblems(url) {
+    var pattern = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?(.+)/;
     if (pattern.test(url) === false)
         return false;
     var query = pattern.exec(url)[1].split('&');
@@ -647,6 +847,14 @@ function isAtcoderProblems(url) {
     var kind = query.filter(function (q) { return /kind=.+/.test(q); }).map(function (q) { return /kind=(.+)/.exec(q)[1]; });
     var isCategory = kind.includes('category') || kind.length === 0;
     return hasUserName && isCategory;
+}
+function isAtcoderProblems(url) {
+    var pattern = /^https:\/\/kenkoooo\.com\/atcoder\/#\/table\/(.+)/;
+    if (pattern.test(url) === false)
+        return false;
+    var users = pattern.exec(url)[1].split('/');
+    var hasUserName = users[0].length > 0;
+    return hasUserName;
 }
 
 

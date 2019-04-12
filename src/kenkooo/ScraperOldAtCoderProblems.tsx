@@ -1,19 +1,22 @@
 import { Result } from '../struct/Result';
 import { createSubmission, Submission } from '../struct/Submission';
 
-export class ScraperAtCoderProblems {
+export class ScraperOldAtCoderProblems {
   public userId: string;
   constructor () {
     this.userId = this.parseUserId(document.location.href);
   }
 
   public parseUserId(url: string): string {
-    const reg: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/#\/table\/([\w-]+)/;
-    if (reg.test(url) === false) {
-      return '';
+    const patternSolo: RegExp = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
+    const patternRival: RegExp = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
+    if (patternSolo.test(url)) {
+      return patternSolo.exec(url)[1];
     }
-    const users = reg.exec(url)[1].split('/');
-    return users[0];
+    if (patternRival.test(url)) {
+      return patternRival.exec(url)[1];
+    }
+    return '';
   }
 
   public isProblemUrl(url: string): boolean {
@@ -27,8 +30,8 @@ export class ScraperAtCoderProblems {
   }
   public parseVerdict(td: Element): Result {
     const classArray: string[] = Array.from(td.classList);
-    if (classArray.includes('table-success')) return Result.AC;
-    if (classArray.includes('table-warning')) return Result.WRONG;
+    if (classArray.includes('success')) return Result.AC;
+    if (classArray.includes('warning')) return Result.WRONG;
     return Result.NODATA;
   }
 

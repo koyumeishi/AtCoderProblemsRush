@@ -22,15 +22,28 @@ test('site cheker: new atcoder', () => {
     .toBe(Site.OTHER);
 });
 
+test('site cheker: old atcoder problems', () => {
+  expect(siteChecker('https://old.kenkoooo.com/atcoder/?user=koyumeishi'))
+    .toBe(Site.OldAtCoderProblems);
+  expect(siteChecker('https://old.kenkoooo.com/atcoder/?user=koyumeishi&rivals=kenkoooo&kind=category'))
+    .toBe(Site.OldAtCoderProblems);
+  expect(siteChecker('https://old.kenkoooo.com/atcoder/?user=koyumeishi&kind=user'))
+    .toBe(Site.OTHER);
+  expect(siteChecker('https://old.kenkoooo.com/atcoder/?user='))
+    .toBe(Site.OTHER);
+  expect(siteChecker('https://old.kenkoooo.com/atcoder/'))
+    .toBe(Site.OTHER);
+});
+
 test('site cheker: atcoder problems', () => {
-  expect(siteChecker('https://kenkoooo.com/atcoder/?user=koyumeishi'))
+  expect(siteChecker('https://kenkoooo.com/atcoder/#/table/koyumeishi'))
     .toBe(Site.AtCoderProblems);
-  expect(siteChecker('https://kenkoooo.com/atcoder/?user=koyumeishi&rivals=kenkoooo&kind=category'))
+  expect(siteChecker('https://kenkoooo.com/atcoder/#/table/koyumeishi/kenkoooo'))
     .toBe(Site.AtCoderProblems);
-  expect(siteChecker('https://kenkoooo.com/atcoder/?user=koyumeishi&kind=user'))
+  expect(siteChecker('https://kenkoooo.com/atcoder/#/list/koyumeishi/kenkoooo'))
     .toBe(Site.OTHER);
-  expect(siteChecker('https://kenkoooo.com/atcoder/?user='))
+  expect(siteChecker('https://kenkoooo.com/atcoder/#/user/koyumeishi'))
     .toBe(Site.OTHER);
-  expect(siteChecker('https://kenkoooo.com/atcoder/'))
+  expect(siteChecker('https://kenkoooo.com/atcoder/#/table//'))
     .toBe(Site.OTHER);
 });
