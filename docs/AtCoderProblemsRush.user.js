@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AtCoderProblemsRush
 // @namespace    https://github.com/koyumeishi/AtCoderProblemsRush
-// @version      1.0.3
+// @version      1.0.4
 // @description  AtCoderProblemsRush speeds up AtCoderProblems
 // @author       koyumeishi
 // @updateURL    https://koyumeishi.github.io/AtCoderProblemsRush/AtCoderProblemsRush.user.js
@@ -9,6 +9,7 @@
 // @match        *://*.contest.atcoder.jp/submissions/*
 // @match        *://atcoder.jp/contests/*/submissions*
 // @match        *://kenkoooo.com/atcoder/*
+// @match        *://old.kenkoooo.com/atcoder/*
 // @grant        GM_setValue
 // @grant        GM_getValue
 // ==/UserScript==
@@ -234,7 +235,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ApplicationAtCoder_1 = __webpack_require__(5);
 var ScraperBetaAtcoder_1 = __webpack_require__(6);
 var ScraperOldAtcoder_1 = __webpack_require__(7);
-var ApplicationAtCoderProblems_1 = __webpack_require__(8);
+var ApplicationOldAtCoderProblems_1 = __webpack_require__(8);
 var SiteChecker_1 = __webpack_require__(10);
 var AtCoderProblemsRush = /** @class */ (function () {
     function AtCoderProblemsRush() {
@@ -254,9 +255,9 @@ var AtCoderProblemsRush = /** @class */ (function () {
                     app.updateSubmissions();
                 })();
                 break;
-            case SiteChecker_1.Site.AtCoderProblems:
+            case SiteChecker_1.Site.OldAtCoderProblems:
                 (function () {
-                    var app = new ApplicationAtCoderProblems_1.ApplicationAtCoderProblems();
+                    var app = new ApplicationOldAtCoderProblems_1.ApplicationOldAtCoderProblems();
                     var containerDom = document.querySelector('div.container > div.container');
                     var observerOptions = {
                         attributes: true,
@@ -440,24 +441,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var IApplication_1 = __webpack_require__(2);
 var Result_1 = __webpack_require__(0);
 var SubmissionsCollection_1 = __webpack_require__(3);
-var ScraperAtCoderProblems_1 = __webpack_require__(9);
-var ApplicationAtCoderProblems = /** @class */ (function () {
-    function ApplicationAtCoderProblems() {
+var ScraperOldAtCoderProblems_1 = __webpack_require__(9);
+var ApplicationOldAtCoderProblems = /** @class */ (function () {
+    function ApplicationOldAtCoderProblems() {
         this.submissionSetAC = new SubmissionsCollection_1.SubmissionsCollection();
         this.submissionSetWA = new SubmissionsCollection_1.SubmissionsCollection();
     }
-    ApplicationAtCoderProblems.prototype.save = function (saveAC, saveWA) {
+    ApplicationOldAtCoderProblems.prototype.save = function (saveAC, saveWA) {
         if (saveAC)
             GM_setValue(IApplication_1.strageKeyAC, this.submissionSetAC.marshal());
         if (saveWA)
             GM_setValue(IApplication_1.strageKeyWA, this.submissionSetWA.marshal());
     };
-    ApplicationAtCoderProblems.prototype.load = function () {
+    ApplicationOldAtCoderProblems.prototype.load = function () {
         this.submissionSetAC.unmarshal(GM_getValue(IApplication_1.strageKeyAC, '[]'));
         this.submissionSetWA.unmarshal(GM_getValue(IApplication_1.strageKeyWA, '[]'));
     };
-    ApplicationAtCoderProblems.prototype.updateSubmissions = function () {
-        var scraper = new ScraperAtCoderProblems_1.ScraperAtCoderProblems();
+    ApplicationOldAtCoderProblems.prototype.updateSubmissions = function () {
+        var scraper = new ScraperOldAtCoderProblems_1.ScraperOldAtCoderProblems();
         if (scraper.doneFetchingProblemSet(document) === false)
             return false;
         var submissions = scraper.scrape(document);
@@ -471,8 +472,8 @@ var ApplicationAtCoderProblems = /** @class */ (function () {
         this.save(newAC, newWA);
         return true;
     };
-    ApplicationAtCoderProblems.prototype.applySavedSubmissions = function () {
-        var scraper = new ScraperAtCoderProblems_1.ScraperAtCoderProblems();
+    ApplicationOldAtCoderProblems.prototype.applySavedSubmissions = function () {
+        var scraper = new ScraperOldAtCoderProblems_1.ScraperOldAtCoderProblems();
         var submissions = scraper.scrape(document);
         this.load();
         var problemMapping = scraper.makeProblemIdToTableCellMap(document);
@@ -505,13 +506,13 @@ var ApplicationAtCoderProblems = /** @class */ (function () {
             .filter(function (s) { return s.userId === scraper.userId; })
             .forEach(setAC);
     };
-    ApplicationAtCoderProblems.prototype.savedUserIds = function () {
+    ApplicationOldAtCoderProblems.prototype.savedUserIds = function () {
         return new Set(this.submissionSetAC.submissions.map(function (s) { return s.userId; })
             .concat(this.submissionSetWA.submissions.map(function (s) { return s.userId; })));
     };
-    return ApplicationAtCoderProblems;
+    return ApplicationOldAtCoderProblems;
 }());
-exports.ApplicationAtCoderProblems = ApplicationAtCoderProblems;
+exports.ApplicationOldAtCoderProblems = ApplicationOldAtCoderProblems;
 
 
 /***/ }),
@@ -523,13 +524,13 @@ exports.ApplicationAtCoderProblems = ApplicationAtCoderProblems;
 Object.defineProperty(exports, "__esModule", { value: true });
 var Result_1 = __webpack_require__(0);
 var Submission_1 = __webpack_require__(1);
-var ScraperAtCoderProblems = /** @class */ (function () {
-    function ScraperAtCoderProblems() {
+var ScraperOldAtCoderProblems = /** @class */ (function () {
+    function ScraperOldAtCoderProblems() {
         this.userId = this.parseUserId(document.location.href);
     }
-    ScraperAtCoderProblems.prototype.parseUserId = function (url) {
-        var petterSolo = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
-        var petterRival = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
+    ScraperOldAtCoderProblems.prototype.parseUserId = function (url) {
+        var petterSolo = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
+        var petterRival = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
         if (petterSolo.test(url)) {
             return petterSolo.exec(url)[1];
         }
@@ -538,16 +539,16 @@ var ScraperAtCoderProblems = /** @class */ (function () {
         }
         return '';
     };
-    ScraperAtCoderProblems.prototype.isProblemUrl = function (url) {
+    ScraperOldAtCoderProblems.prototype.isProblemUrl = function (url) {
         return /atcoder\.jp\/contests\/.+?\/tasks\/.+$/.test(url);
     };
-    ScraperAtCoderProblems.prototype.parseContestId = function (url) {
+    ScraperOldAtCoderProblems.prototype.parseContestId = function (url) {
         return /atcoder\.jp\/contests\/(.+?)\/tasks\/.+$/.exec(url)[1];
     };
-    ScraperAtCoderProblems.prototype.parseProblemId = function (url) {
+    ScraperOldAtCoderProblems.prototype.parseProblemId = function (url) {
         return /atcoder\.jp\/contests\/.+?\/tasks\/(.+)$/.exec(url)[1];
     };
-    ScraperAtCoderProblems.prototype.parseVerdict = function (td) {
+    ScraperOldAtCoderProblems.prototype.parseVerdict = function (td) {
         var classArray = Array.from(td.classList);
         if (classArray.includes('success'))
             return Result_1.Result.AC;
@@ -555,7 +556,7 @@ var ScraperAtCoderProblems = /** @class */ (function () {
             return Result_1.Result.WRONG;
         return Result_1.Result.NODATA;
     };
-    ScraperAtCoderProblems.prototype.parseTableCell = function (td) {
+    ScraperOldAtCoderProblems.prototype.parseTableCell = function (td) {
         try {
             var url = td.querySelector('a').href;
             if (this.isProblemUrl(url) === false)
@@ -567,27 +568,27 @@ var ScraperAtCoderProblems = /** @class */ (function () {
             return [];
         }
     };
-    ScraperAtCoderProblems.prototype.parseTableRow = function (tr) {
+    ScraperOldAtCoderProblems.prototype.parseTableRow = function (tr) {
         var _this = this;
         return [].concat.apply([], Array.from(tr.querySelectorAll('td'))
             .map(function (td) { return _this.parseTableCell(td); })).filter(function (s) { return s.result !== Result_1.Result.NODATA; });
     };
-    ScraperAtCoderProblems.prototype.scrape = function (doc) {
+    ScraperOldAtCoderProblems.prototype.scrape = function (doc) {
         var _this = this;
         if (this.userId === '')
             return [];
         return [].concat.apply([], Array.from(doc.querySelectorAll('tbody > tr'))
             .map(function (tr) { return _this.parseTableRow(tr); }));
     };
-    ScraperAtCoderProblems.prototype.doneFetchingProblemSet = function (doc) {
+    ScraperOldAtCoderProblems.prototype.doneFetchingProblemSet = function (doc) {
         var _this = this;
         return Array.from(doc.querySelector('tbody > tr').querySelectorAll('a'))
             .map(function (e) { return e.href; }).some(function (url) { return _this.isProblemUrl(url); });
     };
-    ScraperAtCoderProblems.prototype.makeProblemKey = function (contestId, problemId) {
+    ScraperOldAtCoderProblems.prototype.makeProblemKey = function (contestId, problemId) {
         return problemId + "/" + contestId;
     };
-    ScraperAtCoderProblems.prototype.makeProblemIdToTableCellMap = function (doc) {
+    ScraperOldAtCoderProblems.prototype.makeProblemIdToTableCellMap = function (doc) {
         var _this = this;
         var res = new Map();
         var td = [].concat.apply([], Array.from(doc.getElementsByTagName('tbody'))
@@ -601,9 +602,9 @@ var ScraperAtCoderProblems = /** @class */ (function () {
         });
         return res;
     };
-    return ScraperAtCoderProblems;
+    return ScraperOldAtCoderProblems;
 }());
-exports.ScraperAtCoderProblems = ScraperAtCoderProblems;
+exports.ScraperOldAtCoderProblems = ScraperOldAtCoderProblems;
 
 
 /***/ }),
@@ -617,8 +618,9 @@ var Site;
 (function (Site) {
     Site[Site["OldAtCoder"] = 0] = "OldAtCoder";
     Site[Site["BetaAtCoder"] = 1] = "BetaAtCoder";
-    Site[Site["AtCoderProblems"] = 2] = "AtCoderProblems";
-    Site[Site["OTHER"] = 3] = "OTHER";
+    Site[Site["OldAtCoderProblems"] = 2] = "OldAtCoderProblems";
+    Site[Site["AtCoderProblems"] = 3] = "AtCoderProblems";
+    Site[Site["OTHER"] = 4] = "OTHER";
 })(Site = exports.Site || (exports.Site = {}));
 function siteChecker(url) {
     if (isOldAtCoder(url))
@@ -627,6 +629,8 @@ function siteChecker(url) {
         return Site.BetaAtCoder;
     if (isAtcoderProblems(url))
         return Site.AtCoderProblems;
+    if (isOldAtcoderProblems(url))
+        return Site.OldAtCoderProblems;
     return Site.OTHER;
 }
 exports.siteChecker = siteChecker;
@@ -638,8 +642,8 @@ function isBetaAtCoder(url) {
     var pattern = /atcoder\.jp\/contests\/.+\/submissions(?!\/\d+)/;
     return pattern.test(url);
 }
-function isAtcoderProblems(url) {
-    var pattern = /^https:\/\/kenkoooo\.com\/atcoder\/\?(.+)/;
+function isOldAtcoderProblems(url) {
+    var pattern = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?(.+)/;
     if (pattern.test(url) === false)
         return false;
     var query = pattern.exec(url)[1].split('&');
@@ -647,6 +651,14 @@ function isAtcoderProblems(url) {
     var kind = query.filter(function (q) { return /kind=.+/.test(q); }).map(function (q) { return /kind=(.+)/.exec(q)[1]; });
     var isCategory = kind.includes('category') || kind.length === 0;
     return hasUserName && isCategory;
+}
+function isAtcoderProblems(url) {
+    var pattern = /^https:\/\/kenkoooo\.com\/atcoder\/#\/table\/(.+)/;
+    if (pattern.test(url) === false)
+        return false;
+    var users = pattern.exec(url)[1].split('/');
+    var hasUserName = users[0].length > 0;
+    return hasUserName;
 }
 
 
