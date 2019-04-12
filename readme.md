@@ -8,6 +8,9 @@
 
 This UserScript store your submission data within your browser and show your progress before AtCoderProblems crawler runs.
 
+## Demo
+![demo](demo.gif)
+
 ## Installation
 
 - install a userscript manager like [Tampermonkey](https://tampermonkey.net/)
