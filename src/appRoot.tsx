@@ -1,7 +1,7 @@
 import { ApplicationAtCoder } from './atcoder/ApplicationAtCoder';
 import { ScraperBetaAtCoder } from './atcoder/ScraperBetaAtcoder';
 import { ScraperOldAtCoder } from './atcoder/ScraperOldAtcoder';
-import { ApplicationAtCoderProblems } from './kenkooo/ApplicationAtCoderProblems';
+import { ApplicationOldAtCoderProblems } from './kenkooo/ApplicationOldAtCoderProblems';
 import { Site, siteChecker } from './util/SiteChecker';
 
 class AtCoderProblemsRush {
@@ -26,9 +26,9 @@ class AtCoderProblemsRush {
         })();
         break;
 
-      case Site.AtCoderProblems:
+      case Site.OldAtCoderProblems:
         (() => {
-          const app: ApplicationAtCoderProblems = new ApplicationAtCoderProblems();
+          const app: ApplicationOldAtCoderProblems = new ApplicationOldAtCoderProblems();
           const containerDom: Element = document.querySelector('div.container > div.container');
           const observerOptions: any = {
             attributes: true,

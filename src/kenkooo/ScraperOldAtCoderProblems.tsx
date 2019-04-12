@@ -1,15 +1,15 @@
 import { Result } from '../struct/Result';
 import { createSubmission, Submission } from '../struct/Submission';
 
-export class ScraperAtCoderProblems {
+export class ScraperOldAtCoderProblems {
   public userId: string;
   constructor () {
     this.userId = this.parseUserId(document.location.href);
   }
 
   public parseUserId(url: string): string {
-    const petterSolo: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
-    const petterRival: RegExp = /^https:\/\/kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
+    const petterSolo: RegExp = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
+    const petterRival: RegExp = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
     if (petterSolo.test(url)) {
       return petterSolo.exec(url)[1];
     }
