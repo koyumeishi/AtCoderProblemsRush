@@ -12,7 +12,7 @@ export class ScraperAtCoderProblems {
     if (reg.test(url) === false) {
       return '';
     }
-    const users = reg.exec(url).split('/');
+    const users = reg.exec(url)[1].split('/');
     return users[0];
   }
 
