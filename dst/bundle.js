@@ -709,13 +709,13 @@ var ScraperOldAtCoderProblems = /** @class */ (function () {
         this.userId = this.parseUserId(document.location.href);
     }
     ScraperOldAtCoderProblems.prototype.parseUserId = function (url) {
-        var petterSolo = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
-        var petterRival = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
-        if (petterSolo.test(url)) {
-            return petterSolo.exec(url)[1];
+        var patternSolo = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
+        var patternRival = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
+        if (patternSolo.test(url)) {
+            return patternSolo.exec(url)[1];
         }
-        if (petterRival.test(url)) {
-            return petterRival.exec(url)[1];
+        if (patternRival.test(url)) {
+            return patternRival.exec(url)[1];
         }
         return '';
     };

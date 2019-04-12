@@ -8,13 +8,13 @@ export class ScraperOldAtCoderProblems {
   }
 
   public parseUserId(url: string): string {
-    const petterSolo: RegExp = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
-    const petterRival: RegExp = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
-    if (petterSolo.test(url)) {
-      return petterSolo.exec(url)[1];
+    const patternSolo: RegExp = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)/;
+    const patternRival: RegExp = /^https:\/\/old\.kenkoooo\.com\/atcoder\/\?user=([\w-]+)&rivals=[\w-]*&kind=category$/;
+    if (patternSolo.test(url)) {
+      return patternSolo.exec(url)[1];
     }
-    if (petterRival.test(url)) {
-      return petterRival.exec(url)[1];
+    if (patternRival.test(url)) {
+      return patternRival.exec(url)[1];
     }
     return '';
   }
